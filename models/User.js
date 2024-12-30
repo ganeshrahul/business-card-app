@@ -13,5 +13,4 @@ const getUserByCredentials = (username, password, callback) => {
         callback
     );
 };
-console.log(getUserByCredentials())
 module.exports = { getUserByCredentials };

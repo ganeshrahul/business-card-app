@@ -9,6 +9,7 @@
 <body>
 <div class="container">
     <h1>Business Cards</h1>
+    <button id="add-card-button">Add New Card</button>
     <div id="cards">
         <% cards.forEach(card => { %>
             <div class="card">
@@ -20,6 +21,18 @@
             </div>
         <% }) %>
     </div>
+    <div class="pagination">
+        <% if (page > 1) { %>
+            <a href="/cards?page=<%= page - 1 %>">Previous</a>
+        <% } %>
+
+        <span>Page <%= page %> of <%= totalPages %></span>
+
+        <% if (page < totalPages) { %>
+            <a href="/cards?page=<%= page + 1 %>">Next</a>
+        <% } %>
+    </div>
 </div>
+<script src="/js/main.js"></script>
 </body>
 </html>
