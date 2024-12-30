@@ -1,5 +1,6 @@
 const mysql = require('mysql2');
 const mongoose = require('mongoose');
+mongoose.set('strictQuery', false); // Add this line
 
 // MySQL Connection
 const connectMySQL = () => {

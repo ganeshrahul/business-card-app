@@ -13,4 +13,12 @@ const getUserByCredentials = (username, password, callback) => {
         callback
     );
 };
-module.exports = { getUserByCredentials };
+const getUserById = (id, callback) => {
+    pool.query(
+        'SELECT username FROM nithrausers WHERE id = ?',
+        [id],
+        callback
+    )
+};
+
+module.exports = { getUserByCredentials, getUserById };

@@ -1,33 +1,88 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
+/* Basic Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
+/* Responsive Container */
 .container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
+    width: 95%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1em; /* Use em for scalable spacing */
 }
 
+/* Responsive Card */
 .card {
     background: #fff;
-    padding: 20px;
-    margin: 10px 0;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5em; /* Use em for scalable spacing */
+    margin-bottom: 1em;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-button {
-    padding: 10px 20px;
+/* Responsive Button */
+button, a.button {
+    display: inline-block;
+    padding: 0.75em 1.25em; /* Use em for scalable spacing */
     background: #007bff;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
+    text-decoration: none;
+    text-align: center;
 }
 
-button:hover {
+button:hover, a.button:hover {
     background: #0056b3;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em; /* Space out form elements */
+}
+
+form label {
+    font-weight: bold;
+}
+
+form input, form select {
+    padding: 0.5em; /* Use em for scalable spacing */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 1em; /* Space pagination from content */
+    text-align: center;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 0.5em 0.75em;
+    margin: 0 0.25em;
+    background-color: #f0f0f0; /* Light gray background */
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.pagination a:hover{
+    background: #ddd;
+}
+
+/* Responsive Layout for Larger Screens */
+@media (min-width: 768px) {
+    .container {
+        width: 80%;
+        padding: 2em;
+    }
+}
+@media (min-width: 992px){
+    .container{
+        width: 70%;
+    }
 }

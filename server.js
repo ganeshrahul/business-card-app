@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
-        "default-src 'self'; font-src 'self' data:;"
+        "default-src 'self'; font-src 'self' data:; script-src 'self';"
     );
     next();
 });
@@ -41,6 +41,7 @@ catch(error){
 app.use('/auth', authRoutes);
 app.use('/cards', cardRoutes);
 app.use('/services', serviceRoutes);
+
 
 app.get('/', (req, res) => {
     res.render('login');

@@ -7,8 +7,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
 
 router.get('/', authMiddleware, cardController.listCards);
-router.get('/add', authMiddleware, cardController.addCardForm);  // New route
-router.post('/upload', authMiddleware, upload.single('image'), cardController.extractMetadata);
+router.get('/add', authMiddleware, cardController.addCardForm);
+router.post('/upload', upload.fields([{name:'image', maxCount: 1}, {name: 'text', maxCount:1}]), cardController.extractMetadata);
 router.post('/save', authMiddleware, cardController.saveCard);
 
 module.exports = router;
