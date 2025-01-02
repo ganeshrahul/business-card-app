@@ -83,6 +83,7 @@ const extractMetadata = async (req, res) => {
 
         const metadataString = await callChatCompletionAPI(text);
 
+        console.log(metadataString)
 // Parse the metadata string into an object
         let metadata;
         try {
