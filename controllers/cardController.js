@@ -80,7 +80,12 @@ const extractMetadata = async (req, res) => {
         } else {
             console.log('Image file Not received'); // Log the image file
         }
-// (assuming metadataObject is an array with at least one item)
+
+        // Call the Chat Completion API
+        const metadataObject = await callChatCompletionAPI(text);
+
+        // Extract the first item from metadataObject
+        // (assuming metadataObject is an array with at least one item)
         const metadata = metadataObject?.[0] ?? {};
 
         // Convert metadata to a string if you intend to store it as JSON
