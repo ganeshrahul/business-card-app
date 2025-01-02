@@ -36,30 +36,33 @@ const listCards = async (req, res) => {
 
 const extractMetadata = async (req, res) => {
     try {
-        // Check if the image file is uploaded
-        if (!req.files || !req.files['image'] || req.files['image'].length === 0) {
-            return res.status(400).json({ error: 'No file uploaded.' });
-        }
+        console.log('extractMetadata function called'); // Log the function call
+        console.log('Request body:', req.body); // Log the request body
+        console.log('Request files:', req.files); // Log the uploaded files
 
         const text = req.body.text;
-        const fileBuffer = req.files['image'][0].buffer;
-        const selectedServices = req.body.selectedServices || []; // Array of selected service IDs
+        const selectedServices = req.body.selectedServices || [];
 
-        // Step 1: Save the uploaded image to S3
-        const s3Params = {
-            Bucket: process.env.AWS_S3_BUCKET_NAME,
-            Key: `business-cards/${Date.now()}_${req.files['image'][0].originalname}`, // Unique file name
-            Body: fileBuffer,
-            ContentType: req.files['image'][0].mimetype,
-        };
+        let imageUrl = null;
+        if (req.files && req.files['image']) {
+            console.log('Image file received:', req.files['image'][0]); // Log the image file
+            const fileBuffer = req.files['image'][0].buffer;
+            const s3Params = {
+                Bucket: process.env.AWS_S3_BUCKET_NAME,
+                Key: `business-cards/${Date.now()}_${req.files['image'][0].originalname}`,
+                Body: fileBuffer,
+                ContentType: req.files['image'][0].mimetype,
+            };
+            console.log('Uploading image to S3 with params:', s3Params); // Log S3 params
+            const s3UploadResponse = await s3.upload(s3Params).promise();
+            imageUrl = s3UploadResponse.Location;
+            console.log('Image uploaded to S3. URL:', imageUrl); // Log the S3 URL
+        }
 
-        const s3UploadResponse = await s3.upload(s3Params).promise();
-        const imageUrl = s3UploadResponse.Location; // URL of the uploaded image
+        console.log('Calling OpenAI API with text:', text); // Log the text sent to OpenAI
+        const metadata = await callChatCompletionAPI(text);
+        console.log('Metadata received from OpenAI:', metadata); // Log the metadata
 
-        // Step 2: Extract metadata using the OpenAI API
-        const metadata = await callChatCompletionAPI(text + fileBuffer.toString('utf-8'));
-
-        // Step 3: Save all details into MongoDB
         const newBusinessCard = new BusinessCard({
             name: metadata.name,
             email: metadata.email,
@@ -71,17 +74,18 @@ const extractMetadata = async (req, res) => {
             selectedServices: selectedServices,
         });
 
+        console.log('Saving business card to MongoDB:', newBusinessCard); // Log the business card
         const savedCard = await newBusinessCard.save();
+        console.log('Business card saved successfully:', savedCard); // Log the saved card
 
-        // Step 4: Update the selected services (if needed)
         if (selectedServices.length > 0) {
+            console.log('Updating selected services:', selectedServices); // Log selected services
             await Service.updateMany(
-                { _id: { $in: selectedServices } }, // Find services with IDs in the selectedServices array
-                { $push: { businessCards: savedCard._id } } // Add the business card ID to the service's businessCards array
+                { _id: { $in: selectedServices } },
+                { $push: { businessCards: savedCard._id } }
             );
         }
 
-        // Return success response
         res.json({
             message: 'Business card saved successfully',
             card: savedCard,
@@ -89,7 +93,7 @@ const extractMetadata = async (req, res) => {
             metadata: metadata,
         });
     } catch (error) {
-        console.error('Error extracting metadata:', error);
+        console.error('Error extracting metadata:', error); // Log the full error
         res.status(500).json({ error: 'Error extracting metadata' });
     }
 };
