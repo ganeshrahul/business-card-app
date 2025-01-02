@@ -82,15 +82,18 @@ const extractMetadata = async (req, res) => {
         }
 
         // Call the Chat Completion API
-        const metadataObject = await callChatCompletionAPI(text);
+        const metadataString = await callChatCompletionAPI(text);
 
-        // Extract the first item from metadataObject
-        // (assuming metadataObject is an array with at least one item)
-        const metadata = metadataObject?.[0] ?? {};
-
-        // Convert metadata to a string if you intend to store it as JSON
-        const metadataString = JSON.stringify(metadata);
-        console.log(metadata)
+        // Parse the metadata string into an object
+        let metadata;
+        try {
+            metadata = JSON.parse(metadataString)[0];
+        } catch (error) {
+            console.error('Failed to parse metadata:', error);
+            return res.status(500).json({ error: 'Error parsing metadata' });
+        }
+        // console.log(metadata)
+        // console.log(metadata.name)
         // Create the new business card
         const newBusinessCard = new BusinessCard({
             name: metadata.name ?? "",
