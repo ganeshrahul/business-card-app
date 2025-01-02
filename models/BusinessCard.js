@@ -12,8 +12,9 @@ const BusinessCardSchema = new mongoose.Schema({
     scannedText: String,
     createdAt: { type: Date, default: Date.now },
     user: {
-        type: String, // Changed to String
+        type: String, // Username of the uploader
     },
+    username: String, // Add this field
     selectedServices: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Service',

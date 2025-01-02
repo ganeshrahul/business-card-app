@@ -22,7 +22,7 @@ const login = async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        const token = generateToken(results[0].id);
+        const token = generateToken(results[0].id, username);
         res.cookie('token', token, { httpOnly: true });
         res.json({ token });
     } catch (error) {

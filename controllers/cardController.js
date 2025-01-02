@@ -47,6 +47,7 @@ const extractMetadata = async (req, res) => {
 
         const text = req.body.text;
         const selectedServices = req.body.selectedServices || [];
+        const username = req.username; // Assuming username is in req.username after authentication
 
         // Parse selectedServices if it's a string
         let parsedServices;
@@ -103,6 +104,7 @@ const extractMetadata = async (req, res) => {
             address: metadata.address ?? "",
             title: metadata.title ?? "",
             imageUrl, // shorthand for imageUrl: imageUrl
+            username, // shorthand for imageUrl: imageUrl
             metadata: metadataString,
             scannedText: text,
             selectedServices: parsedServices ?? [],
