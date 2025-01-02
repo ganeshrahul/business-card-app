@@ -1,5 +1,5 @@
-const multer = require('multer');
 const express = require('express');
+const multer = require('multer');
 const cardController = require('../controllers/cardController');
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -12,28 +12,32 @@ const upload = multer({ storage: multer.memoryStorage() }).fields([
     { name: 'selectedServices', maxCount: 1 },
 ]);
 
-// Ensure all routes have valid callback functions
-router.get('/', authMiddleware, cardController.listCards); // Check if listCards is defined
-router.post('/upload', authMiddleware, (req, res, next) => {
-    console.log('Request received at /cards/upload');
+/**
+ * @route GET /cards
+ * @desc List all business cards with pagination
+ * @access Private
+ */
+router.get('/', authMiddleware, cardController.listCards);
 
+/**
+ * @route POST /cards/upload
+ * @desc Extract metadata from uploaded business card
+ * @access Private
+ */
+router.post('/upload', authMiddleware, (req, res, next) => {
     upload(req, res, (err) => {
         if (err) {
-            console.error('Multer error:', err);
             return res.status(400).json({ error: err.message });
         }
-
-        // console.log('Multer processed fields:', req.body);
-        // console.log('Multer processed files:', req.files);
-
-        // Ensure the image file exists
-        if (!req.files || !req.files.image) {
-            return res.status(400).json({ error: 'Image file not received' });
-        }
-
         next();
     });
 }, cardController.extractMetadata);
-router.post('/save', authMiddleware, cardController.saveCard); // Check if saveCard is defined
+
+/**
+ * @route POST /cards/save
+ * @desc Save a new business card
+ * @access Private
+ */
+router.post('/save', authMiddleware, cardController.saveCard);
 
 module.exports = router;

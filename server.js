@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const multer = require('multer'); // Add multer for form data parsing
+const multer = require('multer');
 const authRoutes = require('./routes/authRoutes');
 const cardRoutes = require('./routes/cardRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
@@ -20,21 +20,21 @@ app.use(cookieParser());
 const globalUpload = multer({ storage: multer.memoryStorage() });
 
 app.use((req, res, next) => {
-    console.log(req.path)
     if (req.path === '/cards/upload') {
-        console.log("Skipped Global Multer Middleware for /cards/upload");
         next(); // Skip global Multer middleware for /cards/upload
     } else {
         globalUpload.any()(req, res, next);
     }
 });
 
-// Content Security Policy
+// Security Headers
 app.use((req, res, next) => {
     res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; font-src 'self' data:; script-src 'self';"
     );
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
     next();
 });
 
@@ -56,6 +56,7 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to the Business Card API' });
 });
 
+// Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error('Error details:', err.stack);
     console.error('Request Path:', req.path);
@@ -63,6 +64,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something broke!' });
 });
 
+// Start Server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

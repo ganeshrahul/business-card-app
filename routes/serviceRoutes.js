@@ -4,7 +4,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+/**
+ * @route GET /services
+ * @desc List all services
+ * @access Private
+ */
 router.get('/', authMiddleware, serviceController.listServices);
-router.post('/save', authMiddleware, serviceController.saveSelectedServices);
 
 module.exports = router;
