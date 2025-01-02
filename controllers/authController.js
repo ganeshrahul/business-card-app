@@ -11,18 +11,17 @@ const login = async (req, res) => {
                 }
                 resolve(results);
             });
-        })
+        });
         if (results.length === 0) {
-            return res.status(401).send('Invalid credentials');
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
         const token = generateToken(results[0].id);
-        res.cookie('token', token, { httpOnly: true }); // Store token in a cookie
-        res.redirect('/cards');
+        res.cookie('token', token, { httpOnly: true });
+        res.json({ token });
     } catch (error) {
         console.error('Error during login:', error);
-        res.status(500).send('Internal server error');
+        res.status(500).json({ error: 'Internal server error' });
     }
-
 };
 
 module.exports = { login };

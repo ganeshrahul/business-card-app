@@ -14,8 +14,6 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static('public'));
-app.set('view engine', 'ejs');
 
 // Content Security Policy
 app.use((req, res, next) => {
@@ -27,31 +25,27 @@ app.use((req, res, next) => {
 });
 
 // Database Connections
-try{
+try {
     connectMySQL();
     connectMongoDB();
+} catch (error) {
+    console.error("Failed to connect to database", error);
+    process.exit(1);
 }
-catch(error){
-    console.error("Failed to connect to database", error)
-    process.exit(1)
-}
-
 
 // Routes
 app.use('/auth', authRoutes);
 app.use('/cards', cardRoutes);
 app.use('/services', serviceRoutes);
 
-
 app.get('/', (req, res) => {
-    res.render('login');
+    res.json({ message: 'Welcome to the Business Card API' });
 });
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).json({ error: 'Something broke!' });
 });
-
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
