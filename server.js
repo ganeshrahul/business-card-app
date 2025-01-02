@@ -16,10 +16,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Multer middleware for parsing multipart/form-data
-const upload = multer(); // No need for storage since we're not saving files
-app.use(upload.none()); // Parse form data (not files)
-
 // Content Security Policy
 app.use((req, res, next) => {
     res.setHeader(
@@ -48,7 +44,7 @@ app.get('/', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('Error details:', err.stack); // Log the full error stack
     res.status(500).json({ error: 'Something broke!' });
 });
 
