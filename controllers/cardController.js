@@ -36,12 +36,24 @@ const listCards = async (req, res) => {
 
 const extractMetadata = async (req, res) => {
     try {
-        console.log('extractMetadata function called'); // Log the function call
         console.log('Request body:', req.body); // Log the request body
         console.log('Request files:', req.files); // Log the uploaded files
 
         const text = req.body.text;
         const selectedServices = req.body.selectedServices || [];
+
+        // Parse selectedServices if it's a string
+        let parsedServices;
+        if (typeof selectedServices === "string") {
+            try {
+                parsedServices = JSON.parse(selectedServices);
+            } catch (error) {
+                console.error("Error parsing selectedServices:", error);
+                return res.status(400).json({ error: "Invalid selectedServices format" });
+            }
+        } else {
+            parsedServices = selectedServices;
+        }
 
         let imageUrl = null;
         if (req.files && req.files['image']) {
@@ -57,11 +69,20 @@ const extractMetadata = async (req, res) => {
             const s3UploadResponse = await s3.upload(s3Params).promise();
             imageUrl = s3UploadResponse.Location;
             console.log('Image uploaded to S3. URL:', imageUrl); // Log the S3 URL
+        }else {
+            console.log('Image file Not received'); // Log the image file
         }
 
-        console.log('Calling OpenAI API with text:', text); // Log the text sent to OpenAI
-        const metadata = await callChatCompletionAPI(text);
-        console.log('Metadata received from OpenAI:', metadata); // Log the metadata
+        const metadataString = await callChatCompletionAPI(text);
+
+// Parse the metadata string into an object
+        let metadata;
+        try {
+            metadata = JSON.parse(metadataString);
+        } catch (error) {
+            console.error('Failed to parse metadata:', error);
+            return res.status(500).json({ error: 'Error parsing metadata' });
+        }
 
         const newBusinessCard = new BusinessCard({
             name: metadata.name,
@@ -72,20 +93,10 @@ const extractMetadata = async (req, res) => {
             title: metadata.title,
             imageUrl: imageUrl,
             metadata: metadata,
-            selectedServices: selectedServices,
+            selectedServices: parsedServices,
         });
 
-        console.log('Saving business card to MongoDB:', newBusinessCard); // Log the business card
         const savedCard = await newBusinessCard.save();
-        console.log('Business card saved successfully:', savedCard); // Log the saved card
-
-        if (selectedServices.length > 0) {
-            console.log('Updating selected services:', selectedServices); // Log selected services
-            await Service.updateMany(
-                { _id: { $in: selectedServices } },
-                { $push: { businessCards: savedCard._id } }
-            );
-        }
 
         res.json({
             message: 'Business card saved successfully',

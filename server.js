@@ -18,7 +18,16 @@ app.use(cookieParser());
 
 // Multer middleware for parsing multipart/form-data
 const globalUpload = multer({ storage: multer.memoryStorage() });
-app.use(globalUpload.any());
+
+app.use((req, res, next) => {
+    console.log(req.path)
+    if (req.path === '/cards/upload') {
+        console.log("Skipped Global Multer Middleware for /cards/upload");
+        next(); // Skip global Multer middleware for /cards/upload
+    } else {
+        globalUpload.any()(req, res, next);
+    }
+});
 
 // Content Security Policy
 app.use((req, res, next) => {
@@ -48,7 +57,9 @@ app.get('/', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error('Error details:', err.stack); // Log the full error stack
+    console.error('Error details:', err.stack);
+    console.error('Request Path:', req.path);
+    console.error('Request Headers:', req.headers);
     res.status(500).json({ error: 'Something broke!' });
 });
 
