@@ -4,14 +4,14 @@ const Service = require('../models/Service');
 const {getUserById} = require('../models/User');
 const AWS = require('aws-sdk');
 
-    // Configure AWS S3 with custom endpoint
-    const s3 = new AWS.S3({
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        endpoint: process.env.AWS_endpoint,
-        s3ForcePathStyle: true, // Required for custom endpoints
-        signatureVersion: 'v4', // Use v4 signature
-    });
+// Configure AWS S3 with custom endpoint
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    endpoint: process.env.AWS_endpoint,
+    s3ForcePathStyle: true, // Required for custom endpoints
+    signatureVersion: 'v4', // Use v4 signature
+});
 
 
 const listCards = async (req, res) => {
@@ -55,7 +55,7 @@ const extractMetadata = async (req, res) => {
                 parsedServices = JSON.parse(selectedServices);
             } catch (error) {
                 console.error("Error parsing selectedServices:", error);
-                return res.status(400).json({ error: "Invalid selectedServices format" });
+                return res.status(400).json({error: "Invalid selectedServices format"});
             }
         } else {
             parsedServices = selectedServices;
@@ -77,33 +77,27 @@ const extractMetadata = async (req, res) => {
             imageUrl = generateCustomS3Url(s3Params.Bucket, s3Params.Key);
 
             console.log('Image uploaded to S3. URL:', imageUrl); // Log the S3 URL
-        }else {
+        } else {
             console.log('Image file Not received'); // Log the image file
         }
+// (assuming metadataObject is an array with at least one item)
+        const metadata = metadataObject?.[0] ?? {};
 
-        const metadataString = await callChatCompletionAPI(text);
+        // Convert metadata to a string if you intend to store it as JSON
+        const metadataString = JSON.stringify(metadata);
 
-        console.log(metadataString)
-// Parse the metadata string into an object
-        let metadata;
-        try {
-            metadata = JSON.parse(metadataString);
-        } catch (error) {
-            console.error('Failed to parse metadata:', error);
-            return res.status(500).json({ error: 'Error parsing metadata' });
-        }
-
+        // Create the new business card
         const newBusinessCard = new BusinessCard({
-            name: metadata.name,
-            email: metadata.email,
-            phone: metadata.phone,
-            company: metadata.company,
-            address: metadata.address,
-            title: metadata.title,
-            imageUrl: imageUrl,
+            name: metadata.name ?? "",
+            email: metadata.email ?? "",
+            phone: metadata.phone ?? "",
+            company: metadata.company ?? "",
+            address: metadata.address ?? "",
+            title: metadata.title ?? "",
+            imageUrl, // shorthand for imageUrl: imageUrl
             metadata: metadataString,
             scannedText: text,
-            selectedServices: parsedServices,
+            selectedServices: parsedServices ?? [],
         });
 
         const savedCard = await newBusinessCard.save();
@@ -114,7 +108,7 @@ const extractMetadata = async (req, res) => {
         });
     } catch (error) {
         console.error('Error extracting metadata:', error); // Log the full error
-        res.status(500).json({ error: 'Error extracting metadata' });
+        res.status(500).json({error: 'Error extracting metadata'});
     }
 };
 
