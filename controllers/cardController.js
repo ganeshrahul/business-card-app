@@ -101,6 +101,7 @@ const extractMetadata = async (req, res) => {
             title: metadata.title,
             imageUrl: imageUrl,
             metadata: metadata,
+            scannedText: text,
             selectedServices: parsedServices,
         });
 
