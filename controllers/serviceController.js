@@ -1,8 +1,10 @@
 const Service = require('../models/Service');
 
 const listServices = async (req, res) => {
+    console.log('Request received at /services'); // Debugging
     try {
         const services = await Service.find();
+        console.log('Fetched services:', services); // Debugging
         res.json({ services });
     } catch (error) {
         console.error('Error fetching services:', error);
