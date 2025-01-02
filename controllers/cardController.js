@@ -4,14 +4,14 @@ const Service = require('../models/Service');
 const {getUserById} = require('../models/User');
 const AWS = require('aws-sdk');
 
-// Configure AWS S3 with custom endpoint
-const s3 = new AWS.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    endpoint: process.env.AWS_endpoint,
-    s3ForcePathStyle: true, // Required for custom endpoints
-    signatureVersion: 'v4', // Use v4 signature
-});
+    // Configure AWS S3 with custom endpoint
+    const s3 = new AWS.S3({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        endpoint: process.env.AWS_endpoint,
+        s3ForcePathStyle: true, // Required for custom endpoints
+        signatureVersion: 'v4', // Use v4 signature
+    });
 
 
 const listCards = async (req, res) => {
@@ -33,6 +33,12 @@ const listCards = async (req, res) => {
         res.status(500).json({error: 'Error fetching cards'});
     }
 };
+
+// Function to generate the custom URL
+function generateCustomS3Url(bucketName, key) {
+    const customDomain = process.env.AWS_domain; // Your custom domain
+    return `${customDomain}/${bucketName}/${key}`;
+}
 
 const extractMetadata = async (req, res) => {
     try {
@@ -65,9 +71,11 @@ const extractMetadata = async (req, res) => {
                 Body: fileBuffer,
                 ContentType: req.files['image'][0].mimetype,
             };
-            console.log('Uploading image to S3 with params:', s3Params); // Log S3 params
+            // console.log('Uploading image to S3 with params:', s3Params); // Log S3 params
             const s3UploadResponse = await s3.upload(s3Params).promise();
-            imageUrl = s3UploadResponse.Location;
+            console.log(s3UploadResponse)
+            imageUrl = generateCustomS3Url(s3Params.Bucket, s3Params.Key);
+
             console.log('Image uploaded to S3. URL:', imageUrl); // Log the S3 URL
         }else {
             console.log('Image file Not received'); // Log the image file
@@ -101,8 +109,6 @@ const extractMetadata = async (req, res) => {
         res.json({
             message: 'Business card saved successfully',
             card: savedCard,
-            imageUrl: imageUrl,
-            metadata: metadata,
         });
     } catch (error) {
         console.error('Error extracting metadata:', error); // Log the full error
