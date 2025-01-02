@@ -8,6 +8,7 @@ const BusinessCardSchema = new mongoose.Schema({
     address: String,
     title: String,
     imageUrl: String,
+    metadata: String,
     createdAt: { type: Date, default: Date.now },
     user: {
         type: String, // Changed to String

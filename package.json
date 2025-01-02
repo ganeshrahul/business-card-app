@@ -1,26 +1,32 @@
 {
   "name": "business-card-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "An API for managing business cards and related services",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "lint": "eslint .",
+    "build": "npm run lint && npm test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["business-card", "API", "nodejs", "express"],
+  "author": "Ganesh Rahul",
+  "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.1692.0",
+    "@aws-sdk/client-s3": "^3.423.0",
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^4.1.4",
     "mongoose": "^6.13.5",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.54.0",
+    "nodemon": "^3.0.1"
   }
 }
