@@ -68,6 +68,7 @@ const extractMetadata = async (req, res) => {
             email: metadata.email,
             phone: metadata.phone,
             company: metadata.company,
+            address: metadata.address,
             title: metadata.title,
             imageUrl: imageUrl,
             metadata: metadata,

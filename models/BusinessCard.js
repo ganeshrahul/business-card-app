@@ -5,6 +5,7 @@ const BusinessCardSchema = new mongoose.Schema({
     email: String,
     phone: String,
     company: String,
+    address: String,
     title: String,
     imageUrl: String,
     createdAt: { type: Date, default: Date.now },
