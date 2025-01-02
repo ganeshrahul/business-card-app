@@ -7,18 +7,17 @@ const pool = mysql.createPool({
 });
 
 const getUserByCredentials = (username, password, callback) => {
-    pool.query(
-        'SELECT * FROM nithrausers WHERE username = ? AND password = ?',
-        [username, password],
-        callback
-    );
-};
-const getUserById = (id, callback) => {
-    pool.query(
-        'SELECT username FROM nithrausers WHERE id = ?',
-        [id],
-        callback
-    )
+    const query = 'SELECT * FROM nithrausers WHERE username = ? AND password = ?';
+    console.log('Executing query:', query, [username, password]); // Debugging
+
+    pool.query(query, [username, password], (err, results) => {
+        if (err) {
+            console.error('Error executing query:', err); // Debugging
+            return callback(err, null);
+        }
+        console.log('Query results:', results); // Debugging
+        callback(null, results);
+    });
 };
 
-module.exports = { getUserByCredentials, getUserById };
+module.exports = { getUserByCredentials };

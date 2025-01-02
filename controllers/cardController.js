@@ -23,16 +23,6 @@ const listCards = async (req, res) => {
     }
 };
 
-const addCardForm = async (req, res) => {
-    try {
-        const services = await Service.find();
-        res.json({ services });
-    } catch (error) {
-        console.error('Error fetching services for card form', error);
-        res.status(500).json({ error: 'Error fetching services for card form' });
-    }
-};
-
 const extractMetadata = async (req, res) => {
     try {
         if (!req.files || !req.files['image'] || req.files['image'].length === 0) {
@@ -68,4 +58,4 @@ const saveCard = async (req, res) => {
     }
 };
 
-module.exports = { listCards, extractMetadata, saveCard, addCardForm };
+module.exports = { listCards, extractMetadata, saveCard };

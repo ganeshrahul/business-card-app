@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const multer = require('multer'); // Add multer for form data parsing
 const authRoutes = require('./routes/authRoutes');
 const cardRoutes = require('./routes/cardRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
@@ -14,6 +15,10 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Multer middleware for parsing multipart/form-data
+const upload = multer(); // No need for storage since we're not saving files
+app.use(upload.none()); // Parse form data (not files)
 
 // Content Security Policy
 app.use((req, res, next) => {
