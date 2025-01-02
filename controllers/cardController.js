@@ -90,7 +90,7 @@ const extractMetadata = async (req, res) => {
 
         // Convert metadata to a string if you intend to store it as JSON
         const metadataString = JSON.stringify(metadata);
-
+        console.log(metadata)
         // Create the new business card
         const newBusinessCard = new BusinessCard({
             name: metadata.name ?? "",
