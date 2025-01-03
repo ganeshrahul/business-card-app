@@ -122,7 +122,7 @@ const extractMetadata = async (req, res) => {
 
         const savedCard = await newBusinessCard.save();
 
-        res.status(201).json({
+        res.status(200).json({
             message: 'Business card saved successfully',
             card: savedCard,
         });
@@ -148,7 +148,7 @@ const saveCard = async (req, res) => {
         });
 
         await newCard.save();
-        res.status(201).json({
+        res.status(200).json({
             message: 'Card saved successfully',
             card: newCard,
         });
