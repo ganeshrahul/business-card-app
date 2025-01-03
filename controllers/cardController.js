@@ -1,6 +1,7 @@
 const BusinessCard = require('../models/BusinessCard');
-const {callChatCompletionAPI} = require('../utils/api');
+const {callChatCompletionAPI, whatsappAPI} = require('../utils/api');
 const AWS = require('aws-sdk');
+const Service = require('../models/Service');
 
 // Configure AWS S3 with custom endpoint
 const s3 = new AWS.S3({
@@ -121,6 +122,45 @@ const extractMetadata = async (req, res) => {
         });
 
         const savedCard = await newBusinessCard.save();
+// WhatsApp messaging logic
+        const services = await Service.find({_id: {$in: parsedServices}});
+        // console.log(services)
+        const serviceMappings = {
+            'Jobs': {
+                templateName: 'yes_con_jobs',
+                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fam9icyIsImlhdCI6MTczNTg5NzM4N30.2T2Lm5QYtofLlFu7cFzBic53eUTjZCaXjRTblVIbQgQ'
+            },
+            'Jobs Pro': {
+                templateName: 'yes_con_jobs',
+                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fam9icyIsImlhdCI6MTczNTg5NzM4N30.2T2Lm5QYtofLlFu7cFzBic53eUTjZCaXjRTblVIbQgQ'
+            },
+            'Ads': {
+                templateName: 'yes_con_ads',
+                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fYWRzIiwiaWF0IjoxNzM1ODk3NDMyfQ.UMQcm3aZdwrl0FjKrUioNkk9qvCpO4CIOWeDeeBuIy0'
+            },
+            'People': {
+                templateName: 'yes_con_people',
+                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fcGVvcGxlIiwiaWF0IjoxNzM1ODk3NDA0fQ.VJb0JMwY3Lf4OMYnbR-FswrfyRlDC0GU81-SSdtNHX8'
+            },
+        };
+
+        const recipient = metadata.phone; // Replace with actual recipient
+
+        // Loop through selected services and send messages
+        const messagePromises = services.map(async service => {
+            const {templateName, accessToken} = serviceMappings[service.name] || {};
+            if (recipient && templateName && accessToken) {
+                await whatsappAPI(recipient, templateName, accessToken);
+            } else {
+                console.log(recipient, templateName, accessToken)
+            }
+            return Promise.resolve(); // Skip if no mapping found
+        });
+
+        // Wait for all messages to be sent
+        await Promise.all(messagePromises);
+
+        console.log('All WhatsApp messages sent.');
 
         res.status(200).json({
             message: 'Business card saved successfully',

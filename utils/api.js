@@ -32,4 +32,40 @@ The business card text is provided below:
     }
 };
 
-module.exports = {callChatCompletionAPI};
+const whatsappAPI = async (recipient, templateName, accessToken) => {
+    try {
+        const postData = [
+            {
+                messaging_product: "whatsapp",
+                to: recipient,
+                type: "template",
+                template: {
+                    name: templateName,
+                    "language": {
+                        "code": "en"
+                    },
+                    components: []
+                }
+            }
+        ];
+        console.log(postData)
+        // Send WhatsApp message
+        return axios.post('https://nithraapps.in:3011/api/common', postData, {
+            headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': accessToken
+            },
+            timeout: 10000, // 10 second timeout
+            maxRedirects: 10
+        }).then(response => {
+            console.log(`Message sent for service: ${templateName}`);
+        }).catch(error => {
+            console.error(`Error sending message for service: ${templateName}`, error.message);
+        });
+    } catch (error) {
+        console.error('Error calling chat completion API:', error); // Log the error
+        throw error;
+    }
+};
+
+module.exports = {callChatCompletionAPI, whatsappAPI};
