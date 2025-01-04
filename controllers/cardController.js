@@ -182,7 +182,7 @@ const extractMetadata = async (req, res) => {
 
 const phoneLeads = async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const {text, from} = req.body;
         const token = req.query.token; // Extract token from request parameters
         // const regex = /\b\d{10}\b/;
