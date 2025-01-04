@@ -200,7 +200,7 @@ const phoneLeads = async (req, res) => {
         const match = text.match(regex);
         let recipient = '';
         if (match) {
-            recipient = match[0]; // Return the first match
+            recipient = match[0].replace(/\s/g, ""); // Remove spaces before returning the number
         }
         const services = [];
         if (token == '220bf3cc-9ac4-4e59-9204-a3833664593b') {
