@@ -195,7 +195,8 @@ const phoneLeads = async (req, res) => {
         console.log(req.body)
         const {text, from} = req.body;
         const token = req.query.token; // Extract token from request parameters
-        const regex = /\b\d{10}\b/;
+        // const regex = /\b\d{10}\b/;
+        const regex = /\b\d{5}\s?\d{5}\b/;
         const match = text.match(regex);
         let recipient = '';
         if (match) {
