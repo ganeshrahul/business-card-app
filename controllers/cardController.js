@@ -147,6 +147,7 @@ const extractMetadata = async (req, res) => {
         const recipient = metadata.phone; // Replace with actual recipient
 
         console.log(services);
+        const uniqueServices = new Map();
         // Filter out duplicate service calls based on templateName and accessToken
         services.forEach(service => {
             const {templateName, accessToken} = serviceMappings[service.name] || {};
