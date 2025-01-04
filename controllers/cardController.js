@@ -147,16 +147,35 @@ const extractMetadata = async (req, res) => {
         const recipient = metadata.phone; // Replace with actual recipient
 
         console.log(services);
-        // Loop through selected services and send messages
-        services.map(service => {
+        // Filter out duplicate service calls based on templateName and accessToken
+        services.forEach(service => {
             const {templateName, accessToken} = serviceMappings[service.name] || {};
-            if (recipient && templateName && accessToken) {
-                whatsappAPI(recipient, templateName, accessToken);
-            } else {
-                console.log(recipient, templateName, accessToken)
+            if (templateName && accessToken) {
+                const key = `${templateName}_${accessToken}`;
+                if (!uniqueServices.has(key)) {
+                    uniqueServices.set(key, {templateName, accessToken});
+                }
             }
-            return Promise.resolve(); // Skip if no mapping found
         });
+
+// Call whatsappAPI for unique services only
+        uniqueServices.forEach(async ({templateName, accessToken}) => {
+            if (recipient && templateName && accessToken) {
+                await whatsappAPI(recipient, templateName, accessToken);
+            } else {
+                console.log(recipient, templateName, accessToken);
+            }
+        });
+        // Loop through selected services and send messages
+        // services.map(service => {
+        //     const {templateName, accessToken} = serviceMappings[service.name] || {};
+        //     if (recipient && templateName && accessToken) {
+        //         whatsappAPI(recipient, templateName, accessToken);
+        //     } else {
+        //         console.log(recipient, templateName, accessToken)
+        //     }
+        //     return Promise.resolve(); // Skip if no mapping found
+        // });
 
         console.log('All WhatsApp messages sent.');
 
@@ -190,18 +209,38 @@ const phoneLeads = async (req, res) => {
             services.push('People')
         } else {
             res.status(500).json({error: 'Token Mismatch'});
-
         }
-        services.map(async service => {
+        const uniqueServices = new Map();
+
+        // Filter out duplicate service calls based on templateName and accessToken
+        services.forEach(service => {
             const {templateName, accessToken} = serviceMappings[service] || {};
+            if (templateName && accessToken) {
+                const key = `${templateName}_${accessToken}`;
+                if (!uniqueServices.has(key)) {
+                    uniqueServices.set(key, {templateName, accessToken});
+                }
+            }
+        });
+
+// Call whatsappAPI for unique services only
+        uniqueServices.forEach(async ({templateName, accessToken}) => {
             if (recipient && templateName && accessToken) {
                 await whatsappAPI(recipient, templateName, accessToken);
             } else {
-                console.log(recipient, templateName, accessToken)
+                console.log(recipient, templateName, accessToken);
             }
-            return Promise.resolve(); // Skip if no mapping found
         });
-
+        // services.map(async service => {
+        //     const {templateName, accessToken} = serviceMappings[service] || {};
+        //     if (recipient && templateName && accessToken) {
+        //         await whatsappAPI(recipient, templateName, accessToken);
+        //     } else {
+        //         console.log(recipient, templateName, accessToken)
+        //     }
+        //     return Promise.resolve(); // Skip if no mapping found
+        // });
+        //
 
         const newBusinessCard = new BusinessCard({
             name: '',
