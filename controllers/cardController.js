@@ -192,7 +192,7 @@ const phoneLeads = async (req, res) => {
 
         console.log(services)
         services.map(async service => {
-            const {templateName, accessToken} = serviceMappings[service.name] || {};
+            const {templateName, accessToken} = serviceMappings[service] || {};
             if (recipient && templateName && accessToken) {
                 await whatsappAPI(recipient, templateName, accessToken);
             } else {
