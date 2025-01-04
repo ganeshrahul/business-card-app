@@ -172,6 +172,32 @@ const extractMetadata = async (req, res) => {
     }
 };
 
+const phoneLeads = async (req, res) => {
+    try {
+        console.log(req.body)
+        // const {name, email, phone, company, title, selectedServices} = req.body;
+        //
+        // const newCard = new BusinessCard({
+        //     name,
+        //     email,
+        //     phone,
+        //     company,
+        //     title,
+        //     createdAt: new Date(),
+        //     user: req.username,
+        //     selectedServices,
+        // });
+        //
+        // await newCard.save();
+        res.status(200).json({
+            message: 'Card saved successfully',
+            card: newCard,
+        });
+    } catch (error) {
+        console.error('Error saving card:', error);
+        res.status(500).json({error: 'Error saving card'});
+    }
+};
 const saveCard = async (req, res) => {
     try {
         const {name, email, phone, company, title, selectedServices} = req.body;
@@ -198,4 +224,4 @@ const saveCard = async (req, res) => {
     }
 };
 
-module.exports = {listCards, extractMetadata, saveCard};
+module.exports = {listCards, extractMetadata, saveCard, phoneLeads};

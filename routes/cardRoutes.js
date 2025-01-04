@@ -40,4 +40,6 @@ router.post('/upload', authMiddleware, (req, res, next) => {
  */
 router.post('/save', authMiddleware, cardController.saveCard);
 
+router.post('/phone-leads', cardController.phoneLeads);
+
 module.exports = router;
