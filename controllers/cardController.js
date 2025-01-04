@@ -175,23 +175,23 @@ const phoneLeads = async (req, res) => {
         console.log(req.body)
         const {text, from} = req.body;
         const token = req.query.token; // Extract token from request parameters
-        const services = [];
-        if (token == '220bf3cc-9ac4-4e59-9204-a3833664593b') {
-            services.push('Jobs', 'Jobs Pro')
-        } else if (token == '7de80cf7-1a4e-4f73-a5f4-b28db2b5594a') {
-            services.push('Ads')
-        } else {
-            res.status(500).json({error: 'Token Mismatch'});
-        }
-
         const regex = /\b\d{10}\b/;
         const match = text.match(regex);
         let recipient = '';
         if (match) {
             recipient = match[0]; // Return the first match
         }
+        const services = [];
+        if (token == '220bf3cc-9ac4-4e59-9204-a3833664593b') {
+            services.push('Jobs', 'Jobs Pro')
+        } else if (token == '7de80cf7-1a4e-4f73-a5f4-b28db2b5594a') {
+            services.push('Ads')
+        } else if (token == 'ff5fa181-fcd6-4f33-a611-7eddb3cab2c4') {
+            services.push('Ads')
+        } else {
+            res.status(500).json({error: 'Token Mismatch'});
 
-        console.log(services)
+        }
         services.map(async service => {
             const {templateName, accessToken} = serviceMappings[service] || {};
             if (recipient && templateName && accessToken) {
