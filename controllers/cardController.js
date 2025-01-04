@@ -11,6 +11,25 @@ const s3 = new AWS.S3({
     s3ForcePathStyle: true,
     signatureVersion: 'v4',
 });
+const serviceMappings = {
+    'Jobs': {
+        templateName: 'yes_con_jobs',
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fam9icyIsImlhdCI6MTczNTg5NzM4N30.2T2Lm5QYtofLlFu7cFzBic53eUTjZCaXjRTblVIbQgQ'
+    },
+    'Jobs Pro': {
+        templateName: 'yes_con_jobs',
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fam9icyIsImlhdCI6MTczNTg5NzM4N30.2T2Lm5QYtofLlFu7cFzBic53eUTjZCaXjRTblVIbQgQ'
+    },
+    'Ads': {
+        templateName: 'yes_con_ads',
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fYWRzIiwiaWF0IjoxNzM1ODk3NDMyfQ.UMQcm3aZdwrl0FjKrUioNkk9qvCpO4CIOWeDeeBuIy0'
+    },
+    'People': {
+        templateName: 'yes_con_people',
+        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fcGVvcGxlIiwiaWF0IjoxNzM1ODk3NDA0fQ.VJb0JMwY3Lf4OMYnbR-FswrfyRlDC0GU81-SSdtNHX8'
+    },
+};
+
 
 const listCards = async (req, res) => {
     try {
@@ -125,40 +144,18 @@ const extractMetadata = async (req, res) => {
 // WhatsApp messaging logic
         const services = await Service.find({_id: {$in: parsedServices}});
         // console.log(services)
-        const serviceMappings = {
-            'Jobs': {
-                templateName: 'yes_con_jobs',
-                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fam9icyIsImlhdCI6MTczNTg5NzM4N30.2T2Lm5QYtofLlFu7cFzBic53eUTjZCaXjRTblVIbQgQ'
-            },
-            'Jobs Pro': {
-                templateName: 'yes_con_jobs',
-                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fam9icyIsImlhdCI6MTczNTg5NzM4N30.2T2Lm5QYtofLlFu7cFzBic53eUTjZCaXjRTblVIbQgQ'
-            },
-            'Ads': {
-                templateName: 'yes_con_ads',
-                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fYWRzIiwiaWF0IjoxNzM1ODk3NDMyfQ.UMQcm3aZdwrl0FjKrUioNkk9qvCpO4CIOWeDeeBuIy0'
-            },
-            'People': {
-                templateName: 'yes_con_people',
-                accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2RlIjoiYXBpIiwicHJvamVjdCI6ImpvYnMiLCJmcm9tIjoiOTE5MTUwMDUxNTc4IiwiaW50ZWdyYXRlZF9udW1iZXIiOiIyNTU4NTMzNDA5MzQ3MDciLCJ0ZW1wbGF0ZSI6Inllc19jb25fcGVvcGxlIiwiaWF0IjoxNzM1ODk3NDA0fQ.VJb0JMwY3Lf4OMYnbR-FswrfyRlDC0GU81-SSdtNHX8'
-            },
-        };
-
         const recipient = metadata.phone; // Replace with actual recipient
 
         // Loop through selected services and send messages
-        const messagePromises = services.map(async service => {
+        services.map(service => {
             const {templateName, accessToken} = serviceMappings[service.name] || {};
             if (recipient && templateName && accessToken) {
-                await whatsappAPI(recipient, templateName, accessToken);
+                whatsappAPI(recipient, templateName, accessToken);
             } else {
                 console.log(recipient, templateName, accessToken)
             }
             return Promise.resolve(); // Skip if no mapping found
         });
-
-        // Wait for all messages to be sent
-        await Promise.all(messagePromises);
 
         console.log('All WhatsApp messages sent.');
 
@@ -175,20 +172,52 @@ const extractMetadata = async (req, res) => {
 const phoneLeads = async (req, res) => {
     try {
         console.log(req.body)
-        // const {name, email, phone, company, title, selectedServices} = req.body;
-        //
-        // const newCard = new BusinessCard({
-        //     name,
-        //     email,
-        //     phone,
-        //     company,
-        //     title,
-        //     createdAt: new Date(),
-        //     user: req.username,
-        //     selectedServices,
-        // });
-        //
-        // await newCard.save();
+        const {text, from} = req.body;
+        const token = req.query.token; // Extract token from request parameters
+        const services = [];
+        if (token == '220bf3cc-9ac4-4e59-9204-a3833664593b') {
+            services.push('Jobs', 'Jobs Pro')
+            // return sendResponse(403, "failure", "Invalid token");
+        } else {
+            res.status(500).json({error: 'Token Mismatch'});
+        }
+
+        const regex = /\b\d{10}\b/;
+        const match = text.match(regex);
+        let recipient = '';
+        if (match) {
+            recipient = match[0]; // Return the first match
+        }
+
+        services.map(async service => {
+            const {templateName, accessToken} = serviceMappings[service.name] || {};
+            if (recipient && templateName && accessToken) {
+                await whatsappAPI(recipient, templateName, accessToken);
+            } else {
+                console.log(recipient, templateName, accessToken)
+            }
+            return Promise.resolve(); // Skip if no mapping found
+        });
+
+
+        const newBusinessCard = new BusinessCard({
+            name: '',
+            email: '',
+            phone: recipient ?? '',
+            company: '',
+            address: '',
+            title: '',
+            imageUrl: '',
+            username: 'Flock : ' + from,
+            metadata: '',
+            scannedText: text,
+            selectedServices: [
+                "6772390a082ad6f446a8158a",
+                "6772393f082ad6f446a8158b"
+            ],
+        });
+        const savedCard = await newBusinessCard.save();
+
         res.status(200).json({
             message: 'Card saved successfully',
         });
