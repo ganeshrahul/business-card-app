@@ -187,7 +187,7 @@ const phoneLeads = async (req, res) => {
         } else if (token == '7de80cf7-1a4e-4f73-a5f4-b28db2b5594a') {
             services.push('Ads')
         } else if (token == 'ff5fa181-fcd6-4f33-a611-7eddb3cab2c4') {
-            services.push('Ads')
+            services.push('People')
         } else {
             res.status(500).json({error: 'Token Mismatch'});
 
