@@ -191,7 +191,6 @@ const phoneLeads = async (req, res) => {
         // await newCard.save();
         res.status(200).json({
             message: 'Card saved successfully',
-            card: newCard,
         });
     } catch (error) {
         console.error('Error saving card:', error);
