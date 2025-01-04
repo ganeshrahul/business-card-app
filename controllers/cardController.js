@@ -123,7 +123,7 @@ const extractMetadata = async (req, res) => {
         try {
             metadata = JSON.parse(metadataString)[0];
         } catch (error) {
-            throw new Error('Error parsing metadata');
+            throw new Error('Error parsing metadata' + metadataString);
         }
 
         const newBusinessCard = new BusinessCard({
@@ -164,19 +164,9 @@ const extractMetadata = async (req, res) => {
             if (recipient && templateName && accessToken) {
                 await whatsappAPI(recipient, templateName, accessToken);
             } else {
-                console.log(recipient, templateName, accessToken);
+                console.log("Cannot send message", text, recipient, templateName);
             }
         });
-        // Loop through selected services and send messages
-        // services.map(service => {
-        //     const {templateName, accessToken} = serviceMappings[service.name] || {};
-        //     if (recipient && templateName && accessToken) {
-        //         whatsappAPI(recipient, templateName, accessToken);
-        //     } else {
-        //         console.log(recipient, templateName, accessToken)
-        //     }
-        //     return Promise.resolve(); // Skip if no mapping found
-        // });
 
         console.log('All WhatsApp messages sent.');
 
@@ -233,19 +223,9 @@ const phoneLeads = async (req, res) => {
                 //     await addToLeadManagement(recipient, templateName);
                 // }
             } else {
-                console.log(recipient, templateName, accessToken);
+                console.log("Cannot send message", text, recipient, templateName);
             }
         });
-        // services.map(async service => {
-        //     const {templateName, accessToken} = serviceMappings[service] || {};
-        //     if (recipient && templateName && accessToken) {
-        //         await whatsappAPI(recipient, templateName, accessToken);
-        //     } else {
-        //         console.log(recipient, templateName, accessToken)
-        //     }
-        //     return Promise.resolve(); // Skip if no mapping found
-        // });
-        //
 
         const newBusinessCard = new BusinessCard({
             name: '',

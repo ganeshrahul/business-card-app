@@ -48,7 +48,6 @@ const whatsappAPI = async (recipient, templateName, accessToken) => {
                 }
             }
         ];
-        console.log(postData)
         // Send WhatsApp message
         return axios.post('https://nithraapps.in:3011/api/common', postData, {
             headers: {
@@ -58,7 +57,7 @@ const whatsappAPI = async (recipient, templateName, accessToken) => {
             timeout: 10000, // 10 second timeout
             maxRedirects: 10
         }).then(response => {
-            console.log(`Message sent for service: ${templateName}`);
+            // console.log(`Message sent for service: ${templateName}`);
         }).catch(error => {
             console.error(`Error sending message for service: ${templateName}`, error.message);
         });
@@ -77,11 +76,11 @@ const addToLeadManagement = async (recipient, source) => {
                 source,
                 message:"Need",
             };
-        console.log(params)
+        // console.log(params)
 // Axios GET request
         axios.get(url, {params})
             .then(response => {
-                console.log('Response:', response.data); // Handle the response data
+                // console.log('Response:', response.data); // Handle the response data
             })
             .catch(error => {
                 console.error('Error:', error); // Handle the error
