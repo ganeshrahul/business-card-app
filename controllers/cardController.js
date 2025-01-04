@@ -189,6 +189,7 @@ const phoneLeads = async (req, res) => {
             recipient = match[0]; // Return the first match
         }
 
+        console.log(services)
         services.map(async service => {
             const {templateName, accessToken} = serviceMappings[service.name] || {};
             if (recipient && templateName && accessToken) {
