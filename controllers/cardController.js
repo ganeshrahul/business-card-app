@@ -178,7 +178,8 @@ const phoneLeads = async (req, res) => {
         const services = [];
         if (token == '220bf3cc-9ac4-4e59-9204-a3833664593b') {
             services.push('Jobs', 'Jobs Pro')
-            // return sendResponse(403, "failure", "Invalid token");
+        } else if (token == '7de80cf7-1a4e-4f73-a5f4-b28db2b5594a') {
+            services.push('Ads')
         } else {
             res.status(500).json({error: 'Token Mismatch'});
         }
