@@ -146,6 +146,7 @@ const extractMetadata = async (req, res) => {
         // console.log(services)
         const recipient = metadata.phone; // Replace with actual recipient
 
+        console.log(services);
         // Loop through selected services and send messages
         services.map(service => {
             const {templateName, accessToken} = serviceMappings[service.name] || {};
