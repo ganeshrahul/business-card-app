@@ -68,4 +68,28 @@ const whatsappAPI = async (recipient, templateName, accessToken) => {
     }
 };
 
-module.exports = {callChatCompletionAPI, whatsappAPI};
+const addToLeadManagement = async (recipient, source) => {
+    try {
+        const url = "https://jobspro.nithrajobs.com/api/getleadsMessage"
+        const params =
+            {
+                from_mobilenumber: recipient,
+                source,
+                message:"Need",
+            };
+        console.log(params)
+// Axios GET request
+        axios.get(url, {params})
+            .then(response => {
+                console.log('Response:', response.data); // Handle the response data
+            })
+            .catch(error => {
+                console.error('Error:', error); // Handle the error
+            });
+    } catch (error) {
+        console.error('Error calling addToLeadManagement API:', error); // Log the error
+        throw error;
+    }
+};
+
+module.exports = {callChatCompletionAPI, whatsappAPI, addToLeadManagement};

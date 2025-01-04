@@ -1,5 +1,5 @@
 const BusinessCard = require('../models/BusinessCard');
-const {callChatCompletionAPI, whatsappAPI} = require('../utils/api');
+const {callChatCompletionAPI, whatsappAPI, addToLeadManagement} = require('../utils/api');
 const AWS = require('aws-sdk');
 const Service = require('../models/Service');
 
@@ -229,6 +229,9 @@ const phoneLeads = async (req, res) => {
         uniqueServices.forEach(async ({templateName, accessToken}) => {
             if (recipient && templateName && accessToken) {
                 await whatsappAPI(recipient, templateName, accessToken);
+                // if (templateName=='yes_con_jobs'){
+                //     await addToLeadManagement(recipient, templateName);
+                // }
             } else {
                 console.log(recipient, templateName, accessToken);
             }
