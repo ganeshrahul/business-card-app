@@ -160,13 +160,13 @@ const extractMetadata = async (req, res) => {
         });
 
 // Call whatsappAPI for unique services only
-        uniqueServices.forEach(async ({templateName, accessToken}) => {
-            if (recipient && templateName && accessToken) {
-                await whatsappAPI(recipient, templateName, accessToken);
-            } else {
-                console.log("Cannot send message", text, recipient, templateName);
-            }
-        });
+//         uniqueServices.forEach(async ({templateName, accessToken}) => {
+//             if (recipient && templateName && accessToken) {
+//                 await whatsappAPI(recipient, templateName, accessToken);
+//             } else {
+//                 console.log("Cannot send message", text, recipient, templateName);
+//             }
+//         });
 
         console.log('All WhatsApp messages sent.');
 
